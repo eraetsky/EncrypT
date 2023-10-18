@@ -78,6 +78,13 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 
 # ---- Executable ----
 
-add_executable(Encrypt src/main.cpp)
-target_link_libraries(Encrypt asio)
-target_compile_features(Encrypt PRIVATE cxx_std_11)
+add_executable(Encrypt-main src/main.cpp)
+add_executable(Encrypt-client src/client/chat_client.cpp)
+add_executable(Encrypt-server src/server/chat_server.cpp)
+
+target_include_directories(Encrypt-main PRIVATE include)
+target_include_directories(Encrypt-client PRIVATE include)
+target_include_directories(Encrypt-server PRIVATE include)
+
+target_link_libraries(Encrypt-client asio)
+target_link_libraries(Encrypt-server asio)
