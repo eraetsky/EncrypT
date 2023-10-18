@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.14...3.22)
 
 # ---- Project ----
 
+set(PROJECT_NAME Encrypt)
+
 project(
-  Encrypt
+  ${PROJECT_NAME}
   VERSION 1.0
   LANGUAGES CXX
 )
@@ -78,13 +80,13 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 
 # ---- Executable ----
 
-add_executable(Encrypt-main src/main.cpp)
-add_executable(Encrypt-client src/client/chat_client.cpp)
-add_executable(Encrypt-server src/server/chat_server.cpp)
+add_executable(${PROJECT_NAME}-main src/main.cpp)
+add_executable(${PROJECT_NAME}-client src/client/chat_client.cpp)
+add_executable(${PROJECT_NAME}-server src/server/chat_server.cpp)
 
-target_include_directories(Encrypt-main PRIVATE include)
-target_include_directories(Encrypt-client PRIVATE include)
-target_include_directories(Encrypt-server PRIVATE include)
+target_include_directories(${PROJECT_NAME}-main PRIVATE include)
+target_include_directories(${PROJECT_NAME}-client PRIVATE include)
+target_include_directories(${PROJECT_NAME}-server PRIVATE include)
 
-target_link_libraries(Encrypt-client asio)
-target_link_libraries(Encrypt-server asio)
+target_link_libraries(${PROJECT_NAME}-client asio)
+target_link_libraries(${PROJECT_NAME}-server asio)
