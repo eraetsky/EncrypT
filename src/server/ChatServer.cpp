@@ -21,9 +21,9 @@
 
 using asio::ip::tcp;
 
-typedef std::deque<chat_message> chat_message_queue;
+typedef std::deque<ChatMessage> chat_message_queue;
 
-typedef std::shared_ptr<chat_participant> chat_participant_ptr;
+typedef std::shared_ptr<ChatParticipant> chat_participant_ptr;
 
 void ChatRoom::join(chat_participant_ptr participant)
 {
@@ -37,7 +37,7 @@ void ChatRoom::leave(chat_participant_ptr participant)
   participants_.erase(participant);
 }
 
-void ChatRoom::deliver(const chat_message &msg)
+void ChatRoom::deliver(const ChatMessage &msg)
 {
   recent_msgs_.push_back(msg);
   while (recent_msgs_.size() > max_recent_msgs)
@@ -47,7 +47,7 @@ void ChatRoom::deliver(const chat_message &msg)
     participant->deliver(msg);
 }
 
-ChatSession::ChatSession(tcp::socket socket, chat_room &room)
+ChatSession::ChatSession(tcp::socket socket, ChatRoom &room)
     : socket_(std::move(socket)),
       room_(room)
 {
@@ -59,7 +59,7 @@ void ChatSession::start()
   do_read_header();
 }
 
-void ChatSession::deliver(const chat_message &msg)
+void ChatSession::deliver(const ChatMessage &msg)
 {
   bool write_in_progress = !write_msgs_.empty();
   write_msgs_.push_back(msg);
@@ -73,7 +73,7 @@ void ChatSession::do_read_header()
 {
   auto self(shared_from_this());
   asio::async_read(socket_,
-                   asio::buffer(read_msg_.data(), chat_message::header_length),
+                   asio::buffer(read_msg_.data(), ChatMessage::header_length),
                    [this, self](std::error_code ec, std::size_t /*length*/)
                    {
                      if (!ec && read_msg_.decode_header())
@@ -143,7 +143,7 @@ void ChatServer::do_accept()
       {
         if (!ec)
         {
-          std::make_shared<chat_session>(std::move(socket), room_)->start();
+          std::make_shared<ChatSession>(std::move(socket), room_)->start();
         }
 
         do_accept();
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 
     asio::io_context io_context;
 
-    std::list<chat_server> servers;
+    std::list<ChatServer> servers;
     for (int i = 1; i < argc; ++i)
     {
       tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[i]));

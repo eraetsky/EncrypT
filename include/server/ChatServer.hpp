@@ -28,7 +28,7 @@ typedef std::deque<ChatMessage> chat_message_queue;
 class ChatParticipant
 {
 public:
-    virtual ~chat_participant() {}
+    virtual ~ChatParticipant() {}
     virtual void deliver(const ChatMessage &msg) = 0;
 };
 
@@ -42,9 +42,9 @@ private:
     {
         max_recent_msgs = 100
     };
-    chat_message_queue recent_msgs
+    chat_message_queue recent_msgs_;
 
-public : 
+public:
     void join(chat_participant_ptr participant);
     void leave(chat_participant_ptr participant);
     void deliver(const ChatMessage &msg);
@@ -59,7 +59,7 @@ private:
     chat_message_queue write_msgs_;
 
 public:
-    ChatSession(tcp::socket socket, chat_room &room);
+    ChatSession(tcp::socket socket, ChatRoom &room);
     void start();
     void deliver(const ChatMessage &msg);
 

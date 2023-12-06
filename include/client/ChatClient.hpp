@@ -5,19 +5,21 @@
 #include "asio.hpp"
 #include "ChatMessage.hpp"
 
-typedef std::deque<chat_message> chat_message_queue;
+using asio::ip::tcp;
+
+typedef std::deque<ChatMessage> chat_message_queue;
 
 class ChatClient
 {
 private:
   asio::io_context &io_context_;
   tcp::socket socket_;
-  chat_message read_msg_;
+  ChatMessage read_msg_;
   chat_message_queue write_msgs_;
 
 public:
   ChatClient(asio::io_context &io_context, const tcp::resolver::results_type &endpoints);
-  void write(const chat_message &msg);
+  void write(const ChatMessage &msg);
   void close();
 
 private:

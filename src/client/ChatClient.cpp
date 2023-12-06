@@ -22,7 +22,7 @@ ChatClient::ChatClient(asio::io_context &io_context, const tcp::resolver::result
   do_connect(endpoints);
 }
 
-void ChatClient::write(const chat_message &msg)
+void ChatClient::write(const ChatMessage &msg)
 {
   asio::post(io_context_,
              [this, msg]()
@@ -57,7 +57,7 @@ void ChatClient::do_connect(const tcp::resolver::results_type &endpoints)
 void ChatClient::do_read_header()
 {
   asio::async_read(socket_,
-                   asio::buffer(read_msg_.data(), chat_message::header_length),
+                   asio::buffer(read_msg_.data(), ChatMessage::header_length),
                    [this](std::error_code ec, std::size_t /*length*/)
                    {
                      if (!ec && read_msg_.decode_header())
@@ -126,15 +126,15 @@ int main(int argc, char *argv[])
 
     tcp::resolver resolver(io_context);
     auto endpoints = resolver.resolve(argv[1], argv[2]);
-    chat_client c(io_context, endpoints);
+    ChatClient c(io_context, endpoints);
 
     std::thread t([&io_context]()
                   { io_context.run(); });
 
-    char line[chat_message::max_body_length + 1];
-    while (std::cin.getline(line, chat_message::max_body_length + 1))
+    char line[ChatMessage::max_body_length + 1];
+    while (std::cin.getline(line, ChatMessage::max_body_length + 1))
     {
-      chat_message msg;
+      ChatMessage msg;
       msg.body_length(std::strlen(line));
       std::memcpy(msg.body(), line, msg.body_length());
       msg.encode_header();
