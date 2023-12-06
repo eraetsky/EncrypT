@@ -44,8 +44,8 @@ private:
     };
     chat_message_queue recent_msgs
 
-        public : void
-                 join(chat_participant_ptr participant);
+public : 
+    void join(chat_participant_ptr participant);
     void leave(chat_participant_ptr participant);
     void deliver(const ChatMessage &msg);
 };
