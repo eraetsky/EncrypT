@@ -46,7 +46,7 @@ ChatRoom::~ChatRoom()
 void ChatRoom::Join(ChatParticipantPtr participant)
 {
   participants_.insert(participant);
-  for (auto msg : recent_msgs_)
+  for (const auto& msg : recent_msgs_)
     participant->Deliver(msg);
 }
 
@@ -61,7 +61,7 @@ void ChatRoom::Deliver(const ChatMessage &msg)
   while (recent_msgs_.size() > max_recent_msgs)
     recent_msgs_.pop_front();
 
-  for (auto participant : participants_)
+  for (const auto& participant : participants_)
     participant->Deliver(msg);
 }
 

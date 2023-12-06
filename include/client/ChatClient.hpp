@@ -8,7 +8,7 @@
 
 using asio::ip::tcp;
 
-typedef std::deque<ChatMessage> ChatMessageQueue;
+using ChatMessageQueue = std::deque<ChatMessage>;
 
 class ChatClient
 {
