@@ -23,31 +23,35 @@
 
 using asio::ip::tcp;
 
-typedef std::deque<ChatMessage> chat_message_queue;
+typedef std::deque<ChatMessage> ChatMessageQueue;
 
 class ChatParticipant
 {
 public:
     virtual ~ChatParticipant() {}
-    virtual void deliver(const ChatMessage &msg) = 0;
+    virtual void Deliver(const ChatMessage &msg) = 0;
 };
 
-typedef std::shared_ptr<ChatParticipant> chat_participant_ptr;
+typedef std::shared_ptr<ChatParticipant> ChatParticipantPtr;
 
 class ChatRoom
 {
 private:
-    std::set<chat_participant_ptr> participants_;
+    std::set<ChatParticipantPtr> participants_;
     enum
     {
         max_recent_msgs = 100
     };
-    chat_message_queue recent_msgs_;
+    ChatMessageQueue recent_msgs_;
 
 public:
-    void join(chat_participant_ptr participant);
-    void leave(chat_participant_ptr participant);
-    void deliver(const ChatMessage &msg);
+    ChatRoom();
+    ChatRoom(std::set<ChatParticipantPtr> participants, ChatMessageQueue recent_msgs);
+    ChatRoom(const ChatRoom& otherRoom);
+    ~ChatRoom();
+    void Join(ChatParticipantPtr participant);
+    void Leave(ChatParticipantPtr participant);
+    void Deliver(const ChatMessage &msg);
 };
 
 class ChatSession : public ChatParticipant, public std::enable_shared_from_this<ChatSession>
@@ -56,17 +60,20 @@ private:
     tcp::socket socket_;
     ChatRoom &room_;
     ChatMessage read_msg_;
-    chat_message_queue write_msgs_;
+    ChatMessageQueue write_msgs_;
 
 public:
+    ChatSession();
     ChatSession(tcp::socket socket, ChatRoom &room);
-    void start();
-    void deliver(const ChatMessage &msg);
+    ChatSession(const ChatSession& otherSession);
+    ~ChatSession();
+    void Start();
+    void Deliver(const ChatMessage &msg);
 
 private:
-    void do_read_header();
-    void do_read_body();
-    void do_write();
+    void DoReadHeader();
+    void DoReadBody();
+    void DoWrite();
 };
 
 class ChatServer
@@ -76,10 +83,15 @@ private:
     ChatRoom room_;
 
 public:
+    ChatServer();
     ChatServer(asio::io_context &io_context, const tcp::endpoint &endpoint);
+    ChatServer(const ChatServer& otherServer);
+    ~ChatServer();
+    ChatRoom GetRoom() const;
+    ChatServer* SetRoom(ChatRoom otherRoom);
 
 private:
-    void do_accept();
+    void DoAccept();
 };
 
 #endif

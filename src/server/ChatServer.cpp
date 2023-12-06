@@ -21,30 +21,53 @@
 
 using asio::ip::tcp;
 
-typedef std::deque<ChatMessage> chat_message_queue;
+typedef std::deque<ChatMessage> ChatMessageQueue;
 
-typedef std::shared_ptr<ChatParticipant> chat_participant_ptr;
+typedef std::shared_ptr<ChatParticipant> ChatParticipantPtr;
 
-void ChatRoom::join(chat_participant_ptr participant)
+ChatRoom::ChatRoom()
+{
+}
+
+ChatRoom::ChatRoom(std::set<ChatParticipantPtr> participants, ChatMessageQueue recent_msgs)
+    :recent_msgs_(recent_msgs), participants_(participants)
+{
+}
+
+ChatRoom::ChatRoom(const ChatRoom& otherRoom)
+    :recent_msgs_(otherRoom.recent_msgs_), participants_(otherRoom.participants_)
+{
+}
+
+ChatRoom::~ChatRoom()
+{
+}
+
+void ChatRoom::Join(ChatParticipantPtr participant)
 {
   participants_.insert(participant);
   for (auto msg : recent_msgs_)
-    participant->deliver(msg);
+    participant->Deliver(msg);
 }
 
-void ChatRoom::leave(chat_participant_ptr participant)
+void ChatRoom::Leave(ChatParticipantPtr participant)
 {
   participants_.erase(participant);
 }
 
-void ChatRoom::deliver(const ChatMessage &msg)
+void ChatRoom::Deliver(const ChatMessage &msg)
 {
   recent_msgs_.push_back(msg);
   while (recent_msgs_.size() > max_recent_msgs)
     recent_msgs_.pop_front();
 
   for (auto participant : participants_)
-    participant->deliver(msg);
+    participant->Deliver(msg);
+}
+
+ChatSession::ChatSession()
+    :room_(ChatRoom::ChatRoom()), read_msg_(), socket_(asio::io_context()), write_msgs_()
+{
 }
 
 ChatSession::ChatSession(tcp::socket socket, ChatRoom &room)
@@ -53,65 +76,74 @@ ChatSession::ChatSession(tcp::socket socket, ChatRoom &room)
 {
 }
 
-void ChatSession::start()
+//ChatSession::ChatSession(const ChatSession& otherSession)
+//    :room_(otherSession.room_), read_msg_(otherSession.read_msg_), write_msgs_(otherSession.write_msgs_),socket_(otherSession.socket_) 
+//{         //не можу знайти спосіб скопіювати сокет
+//}
+
+ChatSession::~ChatSession()
 {
-  room_.join(shared_from_this());
-  do_read_header();
 }
 
-void ChatSession::deliver(const ChatMessage &msg)
+void ChatSession::Start()
+{
+  room_.Join(shared_from_this());
+  DoReadHeader();
+}
+
+void ChatSession::Deliver(const ChatMessage &msg)
 {
   bool write_in_progress = !write_msgs_.empty();
   write_msgs_.push_back(msg);
   if (!write_in_progress)
   {
-    do_write();
+    DoWrite();
   }
 }
 
-void ChatSession::do_read_header()
+void ChatSession::DoReadHeader()
 {
   auto self(shared_from_this());
   asio::async_read(socket_,
-                   asio::buffer(read_msg_.data(), ChatMessage::header_length),
+                   asio::buffer(read_msg_.GetData(), ChatMessage::header_length),
                    [this, self](std::error_code ec, std::size_t /*length*/)
                    {
-                     if (!ec && read_msg_.decode_header())
+                     if (!ec && read_msg_.DecodeHeader())
                      {
-                       do_read_body();
+                       DoReadBody();
                      }
                      else
                      {
-                       room_.leave(shared_from_this());
+                       room_.Leave(shared_from_this());
                      }
                    });
 }
 
-void ChatSession::do_read_body()
+void ChatSession::DoReadBody()
 {
   auto self(shared_from_this());
   asio::async_read(socket_,
-                   asio::buffer(read_msg_.body(), read_msg_.body_length()),
+                   asio::buffer(read_msg_.GetBody(), read_msg_.GetBodyLength()),
                    [this, self](std::error_code ec, std::size_t /*length*/)
                    {
                      if (!ec)
                      {
-                       room_.deliver(read_msg_);
-                       do_read_header();
+                       room_.Deliver(read_msg_);
+                       DoReadHeader();
                      }
                      else
                      {
-                       room_.leave(shared_from_this());
+                       room_.Leave(shared_from_this());
                      }
                    });
 }
 
-void ChatSession::do_write()
+void ChatSession::DoWrite()
 {
   auto self(shared_from_this());
   asio::async_write(socket_,
-                    asio::buffer(write_msgs_.front().data(),
-                                 write_msgs_.front().length()),
+                    asio::buffer(write_msgs_.front().GetData(),
+                                 write_msgs_.front().GetLength()),
                     [this, self](std::error_code ec, std::size_t /*length*/)
                     {
                       if (!ec)
@@ -119,34 +151,58 @@ void ChatSession::do_write()
                         write_msgs_.pop_front();
                         if (!write_msgs_.empty())
                         {
-                          do_write();
+                          DoWrite();
                         }
                       }
                       else
                       {
-                        room_.leave(shared_from_this());
+                        room_.Leave(shared_from_this());
                       }
                     });
 }
 
-ChatServer::ChatServer(asio::io_context &io_context,
-                       const tcp::endpoint &endpoint)
-    : acceptor_(io_context, endpoint)
+ChatServer::ChatServer()
+    :acceptor_(asio::io_context(),tcp::endpoint())
 {
-  do_accept();
+    DoAccept();
 }
 
-void ChatServer::do_accept()
+ChatServer::ChatServer(asio::io_context& io_context, const tcp::endpoint& endpoint)
+    : acceptor_(io_context, endpoint)
+{
+    DoAccept();
+}
+
+//ChatServer::ChatServer(const ChatServer& otherServer) //треба розібратись як скопіювати io_context та endpoint
+//{
+//}
+
+ChatServer::~ChatServer()
+{
+}
+
+ChatRoom ChatServer::GetRoom() const
+{
+    return room_;
+}
+
+ChatServer* ChatServer::SetRoom(ChatRoom otherRoom)
+{
+    room_ = otherRoom;
+    return this;
+}
+
+void ChatServer::DoAccept()
 {
   acceptor_.async_accept(
       [this](std::error_code ec, tcp::socket socket)
       {
         if (!ec)
         {
-          std::make_shared<ChatSession>(std::move(socket), room_)->start();
+          std::make_shared<ChatSession>(std::move(socket), room_)->Start();
         }
 
-        do_accept();
+        DoAccept();
       });
 }
 

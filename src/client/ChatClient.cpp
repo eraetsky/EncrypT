@@ -13,16 +13,31 @@
 #include <iostream>
 #include <thread>
 #include "ChatClient.hpp"
+#include <vector>
 
 using asio::ip::tcp;
+
+ChatClient::ChatClient()
+    :read_msg_(), io_context_(asio::io_context()), socket_(io_context_)
+{
+}
 
 ChatClient::ChatClient(asio::io_context &io_context, const tcp::resolver::results_type &endpoints)
     : io_context_(io_context), socket_(io_context)
 {
-  do_connect(endpoints);
+  DoConnect(endpoints);
 }
 
-void ChatClient::write(const ChatMessage &msg)
+ChatClient::ChatClient(const ChatClient& otherClient)
+    :io_context_(otherClient.io_context_), socket_(io_context_), read_msg_(otherClient.read_msg_), write_msgs_(otherClient.write_msgs_)
+{
+}
+
+ChatClient::~ChatClient()
+{
+}
+
+void ChatClient::Write(const ChatMessage &msg)
 {
   asio::post(io_context_,
              [this, msg]()
@@ -31,38 +46,38 @@ void ChatClient::write(const ChatMessage &msg)
                write_msgs_.push_back(msg);
                if (!write_in_progress)
                {
-                 do_write();
+                 DoWrite();
                }
              });
 }
 
-void ChatClient::close()
+void ChatClient::Close()
 {
   asio::post(io_context_, [this]()
              { socket_.close(); });
 }
 
-void ChatClient::do_connect(const tcp::resolver::results_type &endpoints)
+void ChatClient::DoConnect(const tcp::resolver::results_type &endpoints)
 {
   asio::async_connect(socket_, endpoints,
                       [this](std::error_code ec, tcp::endpoint)
                       {
                         if (!ec)
                         {
-                          do_read_header();
+                          DoReadHeader();
                         }
                       });
 }
 
-void ChatClient::do_read_header()
+void ChatClient::DoReadHeader()
 {
   asio::async_read(socket_,
-                   asio::buffer(read_msg_.data(), ChatMessage::header_length),
+                   asio::buffer(read_msg_.GetData(), ChatMessage::header_length),
                    [this](std::error_code ec, std::size_t /*length*/)
                    {
-                     if (!ec && read_msg_.decode_header())
+                     if (!ec && read_msg_.DecodeHeader())
                      {
-                       do_read_body();
+                       DoReadBody();
                      }
                      else
                      {
@@ -71,17 +86,17 @@ void ChatClient::do_read_header()
                    });
 }
 
-void ChatClient::do_read_body()
+void ChatClient::DoReadBody()
 {
   asio::async_read(socket_,
-                   asio::buffer(read_msg_.body(), read_msg_.body_length()),
+                   asio::buffer(read_msg_.GetBody(), read_msg_.GetBodyLength()),
                    [this](std::error_code ec, std::size_t /*length*/)
                    {
                      if (!ec)
                      {
-                       std::cout.write(read_msg_.body(), read_msg_.body_length());
+                       std::cout.write(read_msg_.GetBody(), read_msg_.GetBodyLength());
                        std::cout << "\n";
-                       do_read_header();
+                       DoReadHeader();
                      }
                      else
                      {
@@ -90,11 +105,11 @@ void ChatClient::do_read_body()
                    });
 }
 
-void ChatClient::do_write()
+void ChatClient::DoWrite()
 {
   asio::async_write(socket_,
-                    asio::buffer(write_msgs_.front().data(),
-                                 write_msgs_.front().length()),
+                    asio::buffer(write_msgs_.front().GetData(),
+                                 write_msgs_.front().GetLength()),
                     [this](std::error_code ec, std::size_t /*length*/)
                     {
                       if (!ec)
@@ -102,7 +117,7 @@ void ChatClient::do_write()
                         write_msgs_.pop_front();
                         if (!write_msgs_.empty())
                         {
-                          do_write();
+                          DoWrite();
                         }
                       }
                       else
@@ -135,13 +150,13 @@ int main(int argc, char *argv[])
     while (std::cin.getline(line, ChatMessage::max_body_length + 1))
     {
       ChatMessage msg;
-      msg.body_length(std::strlen(line));
-      std::memcpy(msg.body(), line, msg.body_length());
-      msg.encode_header();
-      c.write(msg);
+      msg.SetBodyLength(std::strlen(line));
+      std::memcpy(msg.GetBody(), line, msg.GetBodyLength());
+      msg.EncodeHeader();
+      c.Write(msg);
     }
 
-    c.close();
+    c.Close();
     t.join();
   }
   catch (std::exception &e)

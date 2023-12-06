@@ -1,48 +1,56 @@
 #include "ChatMessage.hpp"
+#include "ChatMessage.hpp"
+#include "ChatMessage.hpp"
+#include "ChatMessage.hpp"
 
 ChatMessage::ChatMessage()
     : body_length_(0)
 {
 }
 
-const char *ChatMessage::data() const
+ChatMessage::ChatMessage(std::size_t body_length)
+{
+    this->body_length_ = body_length;
+}
+
+ChatMessage::ChatMessage(const ChatMessage& otherMsg)
+{
+    this->body_length_ = otherMsg.body_length_;
+}
+
+ChatMessage::~ChatMessage()
+{
+}
+
+char *ChatMessage::GetData() const
 {
     return data_;
 }
 
-char *ChatMessage::data()
-{
-    return data_;
-}
-
-std::size_t ChatMessage::length() const
+std::size_t ChatMessage::GetLength() const
 {
     return header_length + body_length_;
 }
 
-const char *ChatMessage::body() const
+char *ChatMessage::GetBody() const
 {
     return data_ + header_length;
 }
 
-char *ChatMessage::body()
-{
-    return data_ + header_length;
-}
-
-std::size_t ChatMessage::body_length() const
+std::size_t ChatMessage::GetBodyLength() const
 {
     return body_length_;
 }
 
-void ChatMessage::body_length(std::size_t new_length)
+ChatMessage ChatMessage::SetBodyLength(std::size_t new_length)
 {
     body_length_ = new_length;
     if (body_length_ > max_body_length)
         body_length_ = max_body_length;
+    return this;
 }
 
-bool ChatMessage::decode_header()
+bool ChatMessage::DecodeHeader()
 {
     char header[header_length + 1] = "";
     std::strncat(header, data_, header_length);
@@ -55,7 +63,7 @@ bool ChatMessage::decode_header()
     return true;
 }
 
-void ChatMessage::encode_header()
+void ChatMessage::EncodeHeader()
 {
     char header[header_length + 1] = "";
     std::sprintf(header, "%4d", static_cast<int>(body_length_));

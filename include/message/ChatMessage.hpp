@@ -28,15 +28,15 @@ private:
 public:
 	ChatMessage();
 	ChatMessage(std::size_t body_length);
-	const char *data() const;
-	char *data();
-	std::size_t length() const;
-	const char *body() const;
-	char *body();
-	std::size_t body_length() const;
-	void body_length(std::size_t new_length);
-	bool decode_header();
-	void encode_header();
+	ChatMessage(const ChatMessage& otherMsg);
+	~ChatMessage();
+	char *GetData() const;
+	std::size_t GetLength() const;
+	char *GetBody() const;
+	std::size_t GetBodyLength() const;
+	ChatMessage SetBodyLength(std::size_t new_length);
+	bool DecodeHeader();
+	void EncodeHeader();
 };
 
 #endif
