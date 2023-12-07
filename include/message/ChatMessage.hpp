@@ -28,11 +28,11 @@ private:
 public:
 	ChatMessage();
 	ChatMessage(std::size_t body_length);
-	ChatMessage(const ChatMessage& otherMsg);
+	ChatMessage(const ChatMessage &otherMsg);
 	~ChatMessage();
-	char *GetData() const;
+	char *GetData();
 	std::size_t GetLength() const;
-	char *GetBody() const;
+	char *GetBody();
 	std::size_t GetBodyLength() const;
 	ChatMessage SetBodyLength(std::size_t new_length);
 	bool DecodeHeader();

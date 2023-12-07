@@ -79,11 +79,12 @@ file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 # ---- Executable ----
-
+# TODO: improve linking srcs to executables
 add_executable(${PROJECT_NAME}-main src/main.cpp)
-add_executable(${PROJECT_NAME}-client src/client/ChatClient.cpp)
-add_executable(${PROJECT_NAME}-server src/server/ChatServer.cpp)
+add_executable(${PROJECT_NAME}-client src/client/ChatClient.cpp src/message/ChatMessage.cpp)
+add_executable(${PROJECT_NAME}-server src/server/ChatServer.cpp src/message/ChatMessage.cpp)
 
+# TODO: improve include directories
 target_include_directories(${PROJECT_NAME}-main PRIVATE include/server include/client include/message)
 target_include_directories(${PROJECT_NAME}-client PRIVATE include/server include/client include/message)
 target_include_directories(${PROJECT_NAME}-server PRIVATE include/server include/client include/message)

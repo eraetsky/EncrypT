@@ -1,7 +1,4 @@
 #include "ChatMessage.hpp"
-#include "ChatMessage.hpp"
-#include "ChatMessage.hpp"
-#include "ChatMessage.hpp"
 
 ChatMessage::ChatMessage()
     : body_length_(0)
@@ -13,7 +10,7 @@ ChatMessage::ChatMessage(std::size_t body_length)
     this->body_length_ = body_length;
 }
 
-ChatMessage::ChatMessage(const ChatMessage& otherMsg)
+ChatMessage::ChatMessage(const ChatMessage &otherMsg)
 {
     this->body_length_ = otherMsg.body_length_;
 }
@@ -22,7 +19,7 @@ ChatMessage::~ChatMessage()
 {
 }
 
-char *ChatMessage::GetData() const
+char *ChatMessage::GetData()
 {
     return data_;
 }
@@ -32,7 +29,7 @@ std::size_t ChatMessage::GetLength() const
     return header_length + body_length_;
 }
 
-char *ChatMessage::GetBody() const
+char *ChatMessage::GetBody()
 {
     return data_ + header_length;
 }
@@ -47,7 +44,7 @@ ChatMessage ChatMessage::SetBodyLength(std::size_t new_length)
     body_length_ = new_length;
     if (body_length_ > max_body_length)
         body_length_ = max_body_length;
-    return this;
+    return *this;
 }
 
 bool ChatMessage::DecodeHeader()
