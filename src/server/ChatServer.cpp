@@ -1,13 +1,3 @@
-//
-// chat_server.cpp
-// ~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2023 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
 #include <cstdlib>
 #include <deque>
 #include <iostream>
@@ -78,7 +68,7 @@ ChatSession::ChatSession(tcp::socket socket, ChatRoom &room)
 
 //ChatSession::ChatSession(const ChatSession& otherSession)
 //    :room_(otherSession.room_), read_msg_(otherSession.read_msg_), write_msgs_(otherSession.write_msgs_),socket_(otherSession.socket_) 
-//{         //не можу знайти спосіб скопіювати сокет
+//{         //пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 //}
 
 ChatSession::~ChatSession()
@@ -173,7 +163,7 @@ ChatServer::ChatServer(asio::io_context& io_context, const tcp::endpoint& endpoi
     DoAccept();
 }
 
-//ChatServer::ChatServer(const ChatServer& otherServer) //треба розібратись як скопіювати io_context та endpoint
+//ChatServer::ChatServer(const ChatServer& otherServer) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ io_context пїЅпїЅ endpoint
 //{
 //}
 

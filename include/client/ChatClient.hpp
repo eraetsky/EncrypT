@@ -1,4 +1,3 @@
-
 #ifndef CHATCLIENT_HPP
 #define CHATCLIENT_HPP
 
