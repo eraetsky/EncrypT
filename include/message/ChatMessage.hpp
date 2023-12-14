@@ -21,8 +21,10 @@ public:
 	ChatMessage(const ChatMessage &otherMsg);
 	~ChatMessage();
 	char *GetData();
+	const char *GetData() const;
 	std::size_t GetLength() const;
 	char *GetBody();
+	const char *GetBody() const;
 	std::size_t GetBodyLength() const;
 	ChatMessage SetBodyLength(std::size_t new_length);
 	bool DecodeHeader();

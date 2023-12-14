@@ -24,12 +24,22 @@ char *ChatMessage::GetData()
     return data_;
 }
 
+const char *ChatMessage::GetData() const
+{
+    return data_;
+}
+
 std::size_t ChatMessage::GetLength() const
 {
     return header_length + body_length_;
 }
 
 char *ChatMessage::GetBody()
+{
+    return data_ + header_length;
+}
+
+const char *ChatMessage::GetBody() const
 {
     return data_ + header_length;
 }

@@ -8,7 +8,7 @@
 using asio::ip::tcp;
 
 ChatClient::ChatClient()
-    :read_msg_(), io_context_(asio::io_context()), socket_(io_context_)
+    : read_msg_(), io_context_(asio::io_context()), socket_(io_context_)
 {
 }
 
@@ -18,8 +18,8 @@ ChatClient::ChatClient(asio::io_context &io_context, const tcp::resolver::result
   DoConnect(endpoints);
 }
 
-ChatClient::ChatClient(const ChatClient& otherClient)
-    :io_context_(otherClient.io_context_), socket_(io_context_), read_msg_(otherClient.read_msg_), write_msgs_(otherClient.write_msgs_)
+ChatClient::ChatClient(const ChatClient &otherClient)
+    : io_context_(otherClient.io_context_), socket_(io_context_), read_msg_(otherClient.read_msg_), write_msgs_(otherClient.write_msgs_)
 {
 }
 
@@ -37,6 +37,10 @@ void ChatClient::Write(const ChatMessage &msg)
                if (!write_in_progress)
                {
                  DoWrite();
+               }
+               else
+               {
+                 std::cout << "Write already in progress..." << std::endl;
                }
              });
 }
@@ -113,6 +117,7 @@ void ChatClient::DoWrite()
                       else
                       {
                         socket_.close();
+                        std::cerr << "Error occured: " << ec.message() << "Socket was closed." << std::endl;
                       }
                     });
 }
