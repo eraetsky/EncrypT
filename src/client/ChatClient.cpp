@@ -29,7 +29,7 @@ void ChatClient::close()
              { socket_.close(); });
 }
 
-void do_connect(const tcp::resolver::results_type &endpoints)
+void ChatClient::do_connect(const tcp::resolver::results_type &endpoints)
 {
   asio::async_connect(socket_, endpoints,
                       [this](std::error_code ec, tcp::endpoint)
