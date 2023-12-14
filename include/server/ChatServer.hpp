@@ -67,6 +67,8 @@ private:
 
     void do_write();
 
+    ChatRoom GetRoom();
+
     tcp::socket socket_;
     ChatRoom &room_;
     ChatMessage read_msg_;

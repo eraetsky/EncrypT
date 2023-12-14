@@ -125,6 +125,11 @@ void ChatServer::do_accept()
       });
 }
 
+ChatRoom ChatServer::GetRoom()
+{
+    return room_;
+}
+
 int main(int argc, char *argv[])
 {
   try
