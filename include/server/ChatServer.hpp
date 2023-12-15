@@ -40,6 +40,10 @@ public:
     void leave(ChatParticipant_ptr participant);
     void deliver(const ChatMessage &msg);
 
+    ChatMessageQueue Get_MessageQueue() const;
+
+    ChatRoom* Set_MessageQueue(ChatMessageQueue &otherMessageQueue);
+
 private:
     std::set<ChatParticipant_ptr> participants_;
     enum
@@ -63,10 +67,23 @@ public:
     void start();
     void deliver(const ChatMessage &msg);
 
+     ChatRoom GetRoom() const;
+
+    ChatMessage Get_Message() const;
+
+    ChatMessageQueue Get_MessageQueue() const;
+
+    ChatSession* SetRoom(ChatRoom &otherRoom);
+
+    ChatSession* Set_Message(ChatMessage &otherMessage);
+
+    ChatSession* Set_MessageQueue(ChatMessageQueue &otherMessageQueue);
+
 private:
     void do_read_header();
     void do_read_body();
     void do_write();
+
 
     tcp::socket socket_;
     ChatRoom &room_;
@@ -79,10 +96,14 @@ private:
 class ChatServer
 {
 public:
+
     ChatServer();
     ChatServer(asio::io_context &io_context, const tcp::endpoint &endpoint);
     ChatServer(const ChatServer &otherServer, asio::io_context &newContext);
     ~ChatServer();
+    ChatRoom GetRoom() const;
+    ChatServer* SetRoom(ChatRoom &otherRoom);
+
 
 private:
     void do_accept();
