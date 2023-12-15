@@ -32,10 +32,12 @@ typedef std::shared_ptr<ChatParticipant> ChatParticipant_ptr;
 class ChatRoom
 {
 public:
+    ChatRoom();
+    ChatRoom(std::set<ChatParticipant_ptr> participants, ChatMessageQueue recent_msgs);
+    ChatRoom(const ChatRoom& otherRoom);
+    ~ChatRoom();
     void join(ChatParticipant_ptr participant);
-
     void leave(ChatParticipant_ptr participant);
-
     void deliver(const ChatMessage &msg);
 
 private:
@@ -55,16 +57,15 @@ class ChatSession
 {
 public:
     ChatSession(tcp::socket socket, ChatRoom &room);
-
+    ChatSession();
+    ChatSession(const ChatSession& otherSession, asio::io_context newContext);
+    ~ChatSession();
     void start();
-
     void deliver(const ChatMessage &msg);
 
 private:
     void do_read_header();
-
     void do_read_body();
-
     void do_write();
 
     tcp::socket socket_;
@@ -78,8 +79,10 @@ private:
 class ChatServer
 {
 public:
-    ChatServer(asio::io_context &io_context,
-               const tcp::endpoint &endpoint);
+    ChatServer();
+    ChatServer(asio::io_context &io_context, const tcp::endpoint &endpoint);
+    ChatServer(const ChatServer& otherServer, asio::io_context newContext);
+    ~ChatServer();
 
 private:
     void do_accept();

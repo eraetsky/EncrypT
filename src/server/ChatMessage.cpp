@@ -5,6 +5,20 @@ ChatMessage::ChatMessage()
 {
 }
 
+ChatMessage::ChatMessage(const ChatMessage &otherMessage)
+:body_length_(otherMessage.body_length_)
+{
+}
+
+ChatMessage::~ChatMessage()
+{
+}
+
+ChatMessage::ChatMessage(std::size_t body_length)
+:body_length_(body_length)
+{
+}
+
 const char *ChatMessage::data() const
 {
     return data_;

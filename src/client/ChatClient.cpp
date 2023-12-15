@@ -9,6 +9,21 @@ ChatClient::ChatClient(asio::io_context &io_context,
   do_connect(endpoints);
 }
 
+ChatClient::ChatClient(const ChatClient &otherClient)
+:read_msg_(otherClient.read_msg_), write_msgs_(otherClient.write_msgs_),
+socket_(otherClient.io_context_), io_context_(otherClient.io_context_)
+{
+}
+
+ChatClient::~ChatClient()
+{
+}
+
+ChatClient::ChatClient()
+:read_msg_(), write_msgs_(), io_context_(asio::io_context()), socket_(io_context_)
+{
+}
+
 void ChatClient::write(const ChatMessage &msg)
 {
   asio::post(io_context_,
