@@ -22,6 +22,17 @@ void ChatRoom::deliver(const ChatMessage &msg)
     participant->deliver(msg);
 }
 
+ChatMessageQueue ChatRoom::Get_MessageQueue() const
+{
+  return recent_msgs_;
+}
+
+ChatRoom* ChatRoom::Set_MessageQueue(ChatMessageQueue &otherMessageQueue)
+{
+    recent_msgs_ = otherMessageQueue;
+    return this;
+}
+
 ChatSession::ChatSession(tcp::socket socket, ChatRoom &room)
     : socket_(std::move(socket)),
       room_(room)
@@ -104,6 +115,39 @@ void ChatSession::do_write()
                     });
 }
 
+ChatRoom ChatSession::GetRoom() const
+{
+    return room_;
+}
+
+ChatMessage ChatSession::Get_Message() const
+{
+    return read_msg_;
+}
+
+ChatMessageQueue ChatSession::Get_MessageQueue() const
+{
+  return write_msgs_;
+}
+
+ChatSession* ChatSession::SetRoom(ChatRoom &otherRoom)
+{
+    room_ = otherRoom;
+    return this;
+}
+
+ChatSession* ChatSession::Set_Message(ChatMessage &otherMessage)
+{
+    read_msg_ = otherMessage;
+    return this;
+}
+
+ChatSession* ChatSession::Set_MessageQueue(ChatMessageQueue &otherMessageQueue)
+{
+    write_msgs_ = otherMessageQueue;
+    return this;
+}
+
 ChatServer::ChatServer(asio::io_context &io_context,
                        const tcp::endpoint &endpoint)
     : acceptor_(io_context, endpoint)
@@ -125,9 +169,15 @@ void ChatServer::do_accept()
       });
 }
 
-ChatRoom ChatServer::GetRoom()
+ChatRoom ChatServer::GetRoom() const
 {
     return room_;
+}
+
+ChatServer* ChatServer::SetRoom(ChatRoom &otherRoom)
+{
+    room_ = otherRoom;
+    return this;
 }
 
 int main(int argc, char *argv[])
