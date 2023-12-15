@@ -29,6 +29,14 @@ char *ChatMessage::data()
     return data_;
 }
 
+ChatMessage *ChatMessage::set_data(char data[], int size)
+{
+    for(int i=0;i<size;i++){
+        data_[i]=data[i];
+    }
+    return this;
+}
+
 std::size_t ChatMessage::length() const
 {
     return header_length + body_length_;
@@ -49,11 +57,12 @@ std::size_t ChatMessage::body_length() const
     return body_length_;
 }
 
-void ChatMessage::body_length(std::size_t new_length)
+ChatMessage* ChatMessage::body_length(std::size_t new_length)
 {
     body_length_ = new_length;
     if (body_length_ > max_body_length)
         body_length_ = max_body_length;
+    return this;
 }
 
 bool ChatMessage::decode_header()

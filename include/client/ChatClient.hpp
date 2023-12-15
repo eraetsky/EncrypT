@@ -19,6 +19,11 @@ public:
     ~ChatClient();
     void write(const ChatMessage &msg);
     void close();
+    asio::io_context& get_context() const;
+    ChatMessage get_read_msg() const;
+    ChatClient* set_read_msg(ChatMessage& newReadMsg);
+    ChatMessageQueue get_write_msgs() const;
+    ChatClient* set_write_msgs(ChatMessageQueue newWriteMsgs);
 
 private:
     void do_connect(const tcp::resolver::results_type &endpoints);

@@ -44,6 +44,33 @@ void ChatClient::close()
              { socket_.close(); });
 }
 
+asio::io_context& ChatClient::get_context() const
+{
+    return io_context_;
+}
+
+ChatMessage ChatClient::get_read_msg() const
+{
+    return read_msg_;
+}
+
+ChatClient *ChatClient::set_read_msg(ChatMessage &newReadMsg)
+{
+    read_msg_ = newReadMsg;
+    return this;
+}
+
+ChatMessageQueue ChatClient::get_write_msgs() const
+{
+    return write_msgs_;
+}
+
+ChatClient *ChatClient::set_write_msgs(ChatMessageQueue newWriteMsgs)
+{
+    write_msgs_= newWriteMsgs;
+    return this;
+}
+
 void ChatClient::do_connect(const tcp::resolver::results_type &endpoints)
 {
   asio::async_connect(socket_, endpoints,

@@ -16,11 +16,12 @@ public:
   ~ChatMessage();
   const char *data() const;
   char *data();
+  ChatMessage* set_data(char data[], int size);
   std::size_t length() const;
   const char *body() const;
   char *body();
   std::size_t body_length() const;
-  void body_length(std::size_t new_length);
+  ChatMessage* body_length(std::size_t new_length);
   bool decode_header();
   void encode_header();
 
