@@ -1,5 +1,24 @@
 #include "ChatServer.hpp"
 
+ChatRoom::ChatRoom()
+    : recent_msgs_(), participants_()
+{
+}
+
+ChatRoom::ChatRoom(std::set<ChatParticipant_ptr> participants, ChatMessageQueue recent_msgs)
+    : participants_(participants), recent_msgs_(recent_msgs)
+{
+}
+
+ChatRoom::ChatRoom(const ChatRoom &otherRoom)
+    : participants_(otherRoom.participants_), recent_msgs_(otherRoom.recent_msgs_)
+{
+}
+
+ChatRoom::~ChatRoom()
+{
+}
+
 void ChatRoom::join(ChatParticipant_ptr participant)
 {
   participants_.insert(participant);
@@ -22,9 +41,24 @@ void ChatRoom::deliver(const ChatMessage &msg)
     participant->deliver(msg);
 }
 
-ChatSession::ChatSession(tcp::socket socket, ChatRoom &room)
+ChatSession::ChatSession(tcp::socket &socket, ChatRoom &room)
     : socket_(std::move(socket)),
       room_(room)
+{
+}
+
+ChatSession::ChatSession()
+    : socket_(asio::io_context()), read_msg_(), write_msgs_(), room_(ChatRoom::ChatRoom())
+{
+}
+
+ChatSession::ChatSession(const ChatSession &otherSession, asio::io_context &newContext)
+    : read_msg_(otherSession.read_msg_), write_msgs_(otherSession.write_msgs_), room_(otherSession.room_),
+      socket_(newContext)
+{
+}
+
+ChatSession::~ChatSession()
 {
 }
 
@@ -104,11 +138,24 @@ void ChatSession::do_write()
                     });
 }
 
-ChatServer::ChatServer(asio::io_context &io_context,
-                       const tcp::endpoint &endpoint)
+ChatServer::ChatServer()
+    : room_(), acceptor_(asio::io_context())
+{
+}
+
+ChatServer::ChatServer(asio::io_context &io_context, const tcp::endpoint &endpoint)
     : acceptor_(io_context, endpoint)
 {
   do_accept();
+}
+
+ChatServer::ChatServer(const ChatServer &otherServer, asio::io_context &newContext)
+    : room_(otherServer.room_), acceptor_(newContext)
+{
+}
+
+ChatServer::~ChatServer()
+{
 }
 
 void ChatServer::do_accept()

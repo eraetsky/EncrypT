@@ -9,6 +9,21 @@ ChatClient::ChatClient(asio::io_context &io_context,
   do_connect(endpoints);
 }
 
+ChatClient::ChatClient(const ChatClient &otherClient)
+    : read_msg_(otherClient.read_msg_), write_msgs_(otherClient.write_msgs_),
+      socket_(otherClient.io_context_), io_context_(otherClient.io_context_)
+{
+}
+
+ChatClient::~ChatClient()
+{
+}
+
+ChatClient::ChatClient()
+    : read_msg_(), write_msgs_(), io_context_(asio::io_context()), socket_(io_context_)
+{
+}
+
 void ChatClient::write(const ChatMessage &msg)
 {
   asio::post(io_context_,
@@ -29,7 +44,34 @@ void ChatClient::close()
              { socket_.close(); });
 }
 
-void do_connect(const tcp::resolver::results_type &endpoints)
+asio::io_context &ChatClient::get_context() const
+{
+  return io_context_;
+}
+
+ChatMessage ChatClient::get_read_msg() const
+{
+  return read_msg_;
+}
+
+ChatClient *ChatClient::set_read_msg(ChatMessage &newReadMsg)
+{
+  read_msg_ = newReadMsg;
+  return this;
+}
+
+ChatMessageQueue ChatClient::get_write_msgs() const
+{
+  return write_msgs_;
+}
+
+ChatClient *ChatClient::set_write_msgs(const ChatMessageQueue &newWriteMsgs)
+{
+  write_msgs_ = newWriteMsgs;
+  return this;
+}
+
+void ChatClient::do_connect(const tcp::resolver::results_type &endpoints)
 {
   asio::async_connect(socket_, endpoints,
                       [this](std::error_code ec, tcp::endpoint)
