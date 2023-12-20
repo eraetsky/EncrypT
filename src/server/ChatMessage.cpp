@@ -6,8 +6,9 @@ ChatMessage::ChatMessage()
 }
 
 ChatMessage::ChatMessage(const ChatMessage &otherMessage)
-    : body_length_(otherMessage.body_length_)
+   : body_length_(otherMessage.body_length_)
 {
+    std::copy(otherMessage.data_, otherMessage.data_ + header_length + max_body_length, data_);
 }
 
 ChatMessage::~ChatMessage()
@@ -61,7 +62,7 @@ std::size_t ChatMessage::body_length() const
     return body_length_;
 }
 
-ChatMessage *ChatMessage::body_length(std::size_t new_length)
+ChatMessage* ChatMessage::body_length(std::size_t new_length)
 {
     body_length_ = new_length;
     if (body_length_ > max_body_length)

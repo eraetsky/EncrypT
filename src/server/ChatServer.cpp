@@ -186,6 +186,7 @@ ChatSession* ChatSession::Set_MessageQueue(ChatMessageQueue &otherMessageQueue)
 ChatServer::ChatServer()
     : room_(), acceptor_(asio::io_context())
 {
+  do_accept();
 }
 
 ChatServer::ChatServer(asio::io_context &io_context, const tcp::endpoint &endpoint)
@@ -197,6 +198,7 @@ ChatServer::ChatServer(asio::io_context &io_context, const tcp::endpoint &endpoi
 ChatServer::ChatServer(const ChatServer &otherServer, asio::io_context &newContext)
     : room_(otherServer.room_), acceptor_(newContext)
 {
+  do_accept();
 }
 
 ChatServer::~ChatServer()
