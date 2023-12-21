@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Serializer.hpp"
 
-int main(int argc, char *argv[])
+void serializerTest()
 {
    int num = 42;
    std::string serializedNum = DataSerializer<int>::Serialize(num);
@@ -25,4 +25,10 @@ int main(int argc, char *argv[])
    std::string deserializedText = DataSerializer<std::string>::Deserialize(serializedText);
    std::cout << "Serialized text: " << serializedText << std::endl;
    std::cout << "Deserialized text: " << deserializedText << std::endl;
+}
+
+int main(int argc, char *argv[])
+{
+   serializerTest();
+   return 0;
 }
