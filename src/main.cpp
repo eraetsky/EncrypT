@@ -1,5 +1,21 @@
 #include <iostream>
 #include "Serializer.hpp"
+#include "ClientApp.hpp"
+
+void virtualMethodsTest()
+{
+   asio::io_context io_context;
+   tcp::endpoint endpoint;
+   Client *c1_ptr = new Client(io_context, "user1", "qwerty");
+   Client *c2_ptr = new ClientApp("sfbgnd-62673-sfg", endpoint);
+
+   auto ep1 = c1_ptr->getEndpoint();
+   auto ep2 = c2_ptr->getEndpoint();
+
+   std::string c1_userId = c1_ptr->getUserId();
+   std::string c2_userId = c2_ptr->getUserId();
+   std::cout << c1_userId << " " << c2_userId << std::endl;
+}
 
 void serializerTest()
 {
@@ -29,6 +45,7 @@ void serializerTest()
 
 int main(int argc, char *argv[])
 {
+   virtualMethodsTest();
    serializerTest();
    return 0;
 }

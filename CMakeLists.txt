@@ -80,15 +80,16 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 
 # ---- Executable ----
 
-add_executable(${PROJECT_NAME}-main src/main.cpp)
+add_executable(${PROJECT_NAME}-main src/main.cpp src/client/ClientApp.cpp)
 add_executable(${PROJECT_NAME}-client src/client/ChatClient.cpp src/server/ChatMessage.cpp)
 add_executable(${PROJECT_NAME}-server src/server/ChatServer.cpp src/server/ChatMessage.cpp)
 
 
 # TODO: improve include directories
-target_include_directories(${PROJECT_NAME}-main PRIVATE include/server include/client)
-target_include_directories(${PROJECT_NAME}-client PRIVATE include/server include/client)
-target_include_directories(${PROJECT_NAME}-server PRIVATE include/server include/client)
+target_include_directories(${PROJECT_NAME}-main PRIVATE include/server include/client include/common)
+target_include_directories(${PROJECT_NAME}-client PRIVATE include/server include/client include/common)
+target_include_directories(${PROJECT_NAME}-server PRIVATE include/server include/client include/common)
 
 target_link_libraries(${PROJECT_NAME}-client asio)
 target_link_libraries(${PROJECT_NAME}-server asio)
+target_link_libraries(${PROJECT_NAME}-main asio)
