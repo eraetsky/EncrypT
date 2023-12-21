@@ -53,6 +53,11 @@ ChatRoom* ChatRoom::Set_MessageQueue(ChatMessageQueue &otherMessageQueue)
     return this;
 }
 
+const ChatMessage& ChatRoom::operator[](const int index) const
+{
+  return this->recent_msgs_[index];
+}
+
 ChatSession::ChatSession(tcp::socket &socket, ChatRoom &room)
     : socket_(std::move(socket)),
       room_(room)
