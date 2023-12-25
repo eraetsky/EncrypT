@@ -36,10 +36,12 @@ bool operator!= (const ChatMessage &thisMessage, const ChatMessage &otherMessage
     return !(thisMessage==otherMessage);
 }
 
-ChatMessage operator+(ChatMessage &message, std::size_t value)
+ChatMessage operator+(ChatMessage &thisMessage, const ChatMessage &otherMessage)
 {
-    message.body_length_ += value;
-    return message;
+    thisMessage.body_length_ += otherMessage.body_length_;
+     if (thisMessage.body_length_ > thisMessage.max_body_length) 
+     thisMessage.body_length_ = thisMessage.max_body_length;
+    strcat(thisMessage.data_, otherMessage.data_);
 }
 
 ChatMessage& ChatMessage::operator++()
@@ -57,8 +59,7 @@ ChatMessage ChatMessage::operator++(int)
 
 std::ostream& operator<< (std::ostream &out, const ChatMessage &message)
 {
-    out << message.body_length_;
-    return out;
+    printf(message.data_);
 }
 
 std::istream& operator>> (std::istream &in, const ChatMessage &message)

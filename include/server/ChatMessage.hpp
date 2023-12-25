@@ -17,7 +17,7 @@ public:
   void operator=(const ChatMessage &otherMessage);
   friend bool operator== (const ChatMessage &thisMessage, const ChatMessage &otherMessage);
   friend bool operator!= (const ChatMessage &thisMessage, const ChatMessage &otherMessage);
-  friend ChatMessage operator+(ChatMessage &message, std::size_t value);
+  friend ChatMessage operator+(ChatMessage &thisMessage, const ChatMessage &otherMessage);
   ChatMessage& operator++();
   ChatMessage operator++(int);
   friend std::ostream& operator<< (std::ostream &out, const ChatMessage &message);
