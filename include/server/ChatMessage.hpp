@@ -23,6 +23,9 @@ public:
   ChatMessage operator++(int);
   friend std::ostream &operator<<(std::ostream &out, const ChatMessage &message);
   friend std::istream &operator>>(std::istream &in, ChatMessage &message);
+  ChatMessage &operator()(char data[], size_t size, std::size_t new_length);
+  explicit operator char *();
+  explicit ChatMessage(int);
   ~ChatMessage();
   const char *data() const;
   char *data();

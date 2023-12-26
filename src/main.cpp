@@ -28,6 +28,15 @@ void operatorsTest()
    std::cout << m3.body_length() << std::endl;
    ++m3;
    std::cout << m3.body_length() << std::endl;
+   m2 = ChatMessage(5);
+
+   std::cout << m2.data() << std::endl;
+
+   std::cout << (char *)m3 << std::endl;
+
+   auto m = m2(array, 100, 150);
+   std::cout << m.data() << std::endl;
+
    std::cout << "Operators overloading: passed succesfully!\n";
 }
 

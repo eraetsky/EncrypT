@@ -71,6 +71,27 @@ std::istream &operator>>(std::istream &in, ChatMessage &message)
     return in;
 }
 
+ChatMessage &ChatMessage::operator()(char data[], size_t size, std::size_t new_length)
+{
+    body_length_ = new_length;
+    if (body_length_ > max_body_length)
+        body_length_ = max_body_length;
+    std::copy(data, data + size, data_);
+    return *this;
+}
+
+ChatMessage::operator char *()
+{
+    char *buffer;
+    buffer = data_;
+    return buffer;
+}
+
+ChatMessage::ChatMessage(int a)
+{
+    itoa(a, data_, 16);
+}
+
 const char *ChatMessage::data() const
 {
     return data_;
