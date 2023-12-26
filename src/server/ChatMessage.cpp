@@ -1,4 +1,5 @@
 #include "ChatMessage.hpp"
+#include <iostream>
 
 ChatMessage::ChatMessage()
     : body_length_(0)
@@ -24,6 +25,48 @@ void ChatMessage::operator=(const ChatMessage &otherMessage)
 {
     std::copy(otherMessage.data_, otherMessage.data_ + header_length + max_body_length, data_);
     body_length_ = otherMessage.body_length_;
+}
+
+bool operator== (const ChatMessage &thisMessage, const ChatMessage &otherMessage)
+{
+    return(thisMessage.body_length_==otherMessage.body_length_);
+}
+
+bool operator!= (const ChatMessage &thisMessage, const ChatMessage &otherMessage)
+{
+    return !(thisMessage==otherMessage);
+}
+
+ChatMessage operator+(ChatMessage &thisMessage, const ChatMessage &otherMessage)
+{
+    thisMessage.body_length_ += otherMessage.body_length_;
+     if (thisMessage.body_length_ > thisMessage.max_body_length) 
+     thisMessage.body_length_ = thisMessage.max_body_length;
+    strcat(thisMessage.data_, otherMessage.data_);
+}
+
+ChatMessage& ChatMessage::operator++()
+{
+    ++body_length_;
+    return *this;
+}
+
+ChatMessage ChatMessage::operator++(int)
+{
+    ChatMessage temp(this->body_length_);
+    ++(this->body_length_);
+    return temp;
+}
+
+std::ostream& operator<< (std::ostream &out, const ChatMessage &message)
+{
+    printf(message.data_);
+}
+
+std::istream& operator>> (std::istream &in, const ChatMessage &message)
+{
+    in >> message.body_length_;
+    return in;
 }
 
 const char *ChatMessage::data() const

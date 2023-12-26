@@ -44,6 +44,8 @@ public:
 
     ChatRoom* Set_MessageQueue(ChatMessageQueue &otherMessageQueue);
 
+    const ChatMessage& operator[](const int index) const;
+
 private:
     std::set<ChatParticipant_ptr> participants_;
     enum
