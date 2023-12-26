@@ -15,18 +15,27 @@ public:
   ChatMessage();
   ChatMessage(std::size_t body_length);
   ChatMessage(const ChatMessage &otherMessage);
+
   void operator=(const ChatMessage &otherMessage);
+
   friend bool operator==(const ChatMessage &thisMessage, const ChatMessage &otherMessage);
   friend bool operator!=(const ChatMessage &thisMessage, const ChatMessage &otherMessage);
+
   friend ChatMessage operator+(ChatMessage &thisMessage, const ChatMessage &otherMessage);
+
   ChatMessage &operator++();
   ChatMessage operator++(int);
+
   friend std::ostream &operator<<(std::ostream &out, const ChatMessage &message);
   friend std::istream &operator>>(std::istream &in, ChatMessage &message);
+
   ChatMessage &operator()(char data[], size_t size, std::size_t new_length);
+
   explicit operator char *();
   explicit ChatMessage(int);
+
   ~ChatMessage();
+
   const char *data() const;
   char *data();
   ChatMessage *set_data(char data[], size_t size);

@@ -8,6 +8,7 @@ void operatorsTest()
    std::cout << "Performing operators overloading tests...\n";
    ChatMessage m1(100), m2, m3;
    char array[100] = "Hello, let's run some tests";
+
    m1.set_data(array, 100);
    m2 = m1;
    std::cout << m2 << "\n\n---------------\n";
@@ -26,8 +27,10 @@ void operatorsTest()
 
    std::cin >> m3;
    std::cout << m3.body_length() << std::endl;
+
    ++m3;
    std::cout << m3.body_length() << std::endl;
+
    m2 = ChatMessage(5);
 
    std::cout << m2.data() << std::endl;
@@ -89,6 +92,6 @@ int main(int argc, char *argv[])
 {
    operatorsTest();
    virtualMethodsTest();
-   serializerTest();
+   // serializerTest();
    return 0;
 }
