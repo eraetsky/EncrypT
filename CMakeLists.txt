@@ -80,7 +80,7 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 
 # ---- Executable ----
 
-add_executable(${PROJECT_NAME}-main src/main.cpp src/client/ClientApp.cpp)
+add_executable(${PROJECT_NAME}-main src/main.cpp src/client/ClientApp.cpp src/server/ChatMessage.cpp)
 add_executable(${PROJECT_NAME}-client src/client/ChatClient.cpp src/server/ChatMessage.cpp)
 add_executable(${PROJECT_NAME}-server src/server/ChatServer.cpp src/server/ChatMessage.cpp)
 

@@ -5,32 +5,35 @@
 
 void operatorsTest()
 {
+   std::cout << "Performing operators overloading tests...\n";
    ChatMessage m1(100), m2, m3;
    char array[100] = "Hello, let's run some tests";
    m1.set_data(array, 100);
    m2 = m1;
    std::cout << m2 << "\n\n---------------\n";
 
-   if(m1 == m2) 
+   if (m1 == m2)
    {
-      std::cout<< "Objects are equal\n\n---------------\n";
+      std::cout << "Objects are equal\n\n---------------\n";
    }
    else
    {
-      std::cout<< "Objects are not equal\n\n---------------\n";
+      std::cout << "Objects are not equal\n\n---------------\n";
    }
 
    m3 = m1 + m2;
    std::cout << m3 << "\n\n---------------\n";
 
    std::cin >> m3;
-   std:: cout << m3.body_length() << "\n";
+   std::cout << m3.body_length() << std::endl;
    ++m3;
-   std::cout << m3.body_length();
+   std::cout << m3.body_length() << std::endl;
+   std::cout << "Operators overloading: passed succesfully!\n";
 }
 
 void virtualMethodsTest()
 {
+   std::cout << "Performing dynamic polymorphism test...\n";
    asio::io_context io_context;
    tcp::endpoint endpoint;
    Client *c1_ptr = new Client(io_context, "user1", "qwerty");
@@ -42,10 +45,12 @@ void virtualMethodsTest()
    std::string c1_userId = c1_ptr->getUserId();
    std::string c2_userId = c2_ptr->getUserId();
    std::cout << c1_userId << " " << c2_userId << std::endl;
+   std::cout << "Dynamic polymorphism: passed succesfully!\n";
 }
 
 void serializerTest()
 {
+   std::cout << "Performing template polymorphism test...\n";
    int num = 42;
    std::string serializedNum = DataSerializer<int>::Serialize(num);
    int deserializedNum = DataSerializer<int>::Deserialize(serializedNum);
@@ -68,6 +73,7 @@ void serializerTest()
    std::string deserializedText = DataSerializer<std::string>::Deserialize(serializedText);
    std::cout << "Serialized text: " << serializedText << std::endl;
    std::cout << "Deserialized text: " << deserializedText << std::endl;
+   std::cout << "Template polymorphism: passed succesfully!\n";
 }
 
 int main(int argc, char *argv[])

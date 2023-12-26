@@ -7,7 +7,7 @@ ChatMessage::ChatMessage()
 }
 
 ChatMessage::ChatMessage(const ChatMessage &otherMessage)
-   : body_length_(otherMessage.body_length_)
+    : body_length_(otherMessage.body_length_)
 {
     std::copy(otherMessage.data_, otherMessage.data_ + header_length + max_body_length, data_);
 }
@@ -27,25 +27,26 @@ void ChatMessage::operator=(const ChatMessage &otherMessage)
     body_length_ = otherMessage.body_length_;
 }
 
-bool operator== (const ChatMessage &thisMessage, const ChatMessage &otherMessage)
+bool operator==(const ChatMessage &thisMessage, const ChatMessage &otherMessage)
 {
-    return(thisMessage.body_length_==otherMessage.body_length_);
+    return (thisMessage.body_length_ == otherMessage.body_length_);
 }
 
-bool operator!= (const ChatMessage &thisMessage, const ChatMessage &otherMessage)
+bool operator!=(const ChatMessage &thisMessage, const ChatMessage &otherMessage)
 {
-    return !(thisMessage==otherMessage);
+    return !(thisMessage == otherMessage);
 }
 
 ChatMessage operator+(ChatMessage &thisMessage, const ChatMessage &otherMessage)
 {
     thisMessage.body_length_ += otherMessage.body_length_;
-     if (thisMessage.body_length_ > thisMessage.max_body_length) 
-     thisMessage.body_length_ = thisMessage.max_body_length;
+    if (thisMessage.body_length_ > thisMessage.max_body_length)
+        thisMessage.body_length_ = thisMessage.max_body_length;
     strcat(thisMessage.data_, otherMessage.data_);
+    return thisMessage;
 }
 
-ChatMessage& ChatMessage::operator++()
+ChatMessage &ChatMessage::operator++()
 {
     ++body_length_;
     return *this;
@@ -58,12 +59,13 @@ ChatMessage ChatMessage::operator++(int)
     return temp;
 }
 
-std::ostream& operator<< (std::ostream &out, const ChatMessage &message)
+std::ostream &operator<<(std::ostream &out, const ChatMessage &message)
 {
-    printf(message.data_);
+    out << message.data() << std::endl;
+    return out;
 }
 
-std::istream& operator>> (std::istream &in, const ChatMessage &message)
+std::istream &operator>>(std::istream &in, ChatMessage &message)
 {
     in >> message.body_length_;
     return in;
@@ -105,7 +107,7 @@ std::size_t ChatMessage::body_length() const
     return body_length_;
 }
 
-ChatMessage* ChatMessage::body_length(std::size_t new_length)
+ChatMessage *ChatMessage::body_length(std::size_t new_length)
 {
     body_length_ = new_length;
     if (body_length_ > max_body_length)
