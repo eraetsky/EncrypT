@@ -37,7 +37,7 @@ void ChatRoom::deliver(const ChatMessage &msg)
   while (recent_msgs_.size() > max_recent_msgs)
     recent_msgs_.pop_front();
 
-  for (auto it = participants_.cbegin(); it != participants_.end(); ++it)
+  for (auto it = participants_.cbegin(); it != participants_.cend(); ++it)
     (*it)->deliver(msg);
 }
 
