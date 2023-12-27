@@ -22,8 +22,8 @@ ChatRoom::~ChatRoom()
 void ChatRoom::join(ChatParticipant_ptr participant)
 {
   participants_.insert(participant);
-  for (auto msg : recent_msgs_)
-    participant->deliver(msg);
+  for(auto it = recent_msgs_.cbegin(); it!=recent_msgs_.cend(); ++it)
+    participant->deliver(*it);
 }
 
 void ChatRoom::leave(ChatParticipant_ptr participant)
