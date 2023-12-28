@@ -22,8 +22,8 @@ ChatRoom::~ChatRoom()
 void ChatRoom::join(ChatParticipant_ptr participant)
 {
   participants_.insert(participant);
-  for (auto msg : recent_msgs_)
-    participant->deliver(msg);
+  for(auto it = recent_msgs_.cbegin(); it!=recent_msgs_.cend(); ++it)
+    participant->deliver(*it);
 }
 
 void ChatRoom::leave(ChatParticipant_ptr participant)
@@ -37,8 +37,8 @@ void ChatRoom::deliver(const ChatMessage &msg)
   while (recent_msgs_.size() > max_recent_msgs)
     recent_msgs_.pop_front();
 
-  for (auto participant : participants_)
-    participant->deliver(msg);
+  for (auto it = participants_.cbegin(); it != participants_.cend(); ++it)
+    (*it)->deliver(msg);
 }
 
 
